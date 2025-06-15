@@ -13,7 +13,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Falta el prompt.' });
   }
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro:generateContent?key=${apiKey}`;
+  // Modelo actualizado a Gemini 2.5 Flash Preview 05-20
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-0513-preview:generateContent?key=${apiKey}`;
   const parts = [{ text: prompt }];
   if (image && image.data && image.mimeType) {
     parts.push({
@@ -33,14 +34,14 @@ export default async function handler(req, res) {
 
     const text = await response.text();
     if (!response.ok) {
-      console.error("Gemini API error:", text); // <-- LOG para ver el error real
+      console.error("Gemini API error:", text);
       return res.status(response.status).json({ error: text });
     }
 
     const data = JSON.parse(text);
     return res.status(200).json(data);
   } catch (err) {
-    console.error("Server error:", err); // <-- LOG para errores del servidor
+    console.error("Server error:", err);
     return res.status(500).json({ error: err.message });
   }
 }
