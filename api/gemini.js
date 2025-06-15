@@ -31,14 +31,16 @@ export default async function handler(req, res) {
       body: JSON.stringify({ contents: [{ parts }] })
     });
 
+    const text = await response.text();
     if (!response.ok) {
-      const error = await response.text();
-      return res.status(response.status).json({ error });
+      console.error("Gemini API error:", text); // <-- LOG para ver el error real
+      return res.status(response.status).json({ error: text });
     }
 
-    const data = await response.json();
+    const data = JSON.parse(text);
     return res.status(200).json(data);
   } catch (err) {
+    console.error("Server error:", err); // <-- LOG para errores del servidor
     return res.status(500).json({ error: err.message });
   }
 }
